@@ -24,33 +24,43 @@ public class Game {
     }
 
     private void solo() {
+        int [] coordinates;
         int x, y;
-        print(1);
         for (int i = 0; i < 30; i++) {
-            System.out.println("Your turn. Enter coordinates.");
-                x = readValue();
-                y = readValue();
-            while (!playground.check(1, x, y)) {
-                System.out.println("Incorrect value.");
-                x = readValue();
-                y = readValue();
+            int t = print(1);
+            if (t == 0) {
+                break;
+            } else if (t > 1) {
+                System.out.println("Your turn. Enter coordinates.");
+                coordinates = readValues();
+                x = coordinates[0];
+                y = coordinates[1];
+                while (!playground.check(1, x, y)) {
+                    System.out.println("Incorrect value.");
+                    coordinates = readValues();
+                    x = coordinates[0];
+                    y = coordinates[1];
+                }
+                playground.change(1, x, y);
             }
-            playground.change(1, x, y);
             System.out.print("\n=================================================\n");
-            print(2);
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException ignored) {
+            t = print(2);
+            if (t == 0) {
+                break;
+            } else if (t > 1) {
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException ignored) {
 
-            }
-            playground.change(1, x, y);
-            x = rnd.nextInt(8);
-            y = rnd.nextInt(8);
-            while (!playground.check(2, x, y)) {
+                }
                 x = rnd.nextInt(8);
                 y = rnd.nextInt(8);
+                while (!playground.check(2, x, y)) {
+                    x = rnd.nextInt(8);
+                    y = rnd.nextInt(8);
+                }
+                playground.change(2, x, y);
             }
-            playground.change(2, x, y);
             System.out.print("\n=================================================\n");
             print(1);
         }
@@ -75,18 +85,21 @@ public class Game {
 
     private void duo() {
         int x, y;
+        int[] coordinates;
         for (int i = 0; i < 30; i++) {
             int t = print(1);
             if (t == 0) {
                 break;
             } else if (t > 1) {
                 System.out.println("Player 1 turn. Enter coordinates.");
-                x = readValue();
-                y = readValue();
+                coordinates = readValues();
+                x = coordinates[0];
+                y = coordinates[1];
                 while (!playground.check(1, x, y)) {
                     System.out.println("Incorrect valuesolo.");
-                    x = readValue();
-                    y = readValue();
+                    coordinates = readValues();
+                    x = coordinates[0];
+                    y = coordinates[1];
                 }
                 playground.change(1, x, y);
             }
@@ -95,12 +108,14 @@ public class Game {
                 break;
             } else if (t > 1) {
                 System.out.println("Player 2 turn. Enter coordinates.");
-                x = readValue();
-                y = readValue();
+                coordinates = readValues();
+                x = coordinates[0];
+                y = coordinates[1];
                 while (!playground.check(2, x, y)) {
                     System.out.println("Incorrect value.");
-                    x = readValue();
-                    y = readValue();
+                    coordinates = readValues();
+                    x = coordinates[0];
+                    y = coordinates[1];
                 }
                 playground.change(2, x, y);
             }
@@ -124,19 +139,27 @@ public class Game {
             System.out.println("Second player won with score: " + secondScore);
         }
     }
-    private int readValue() {
-        int x;
+    private int[] readValues() {
+        int[] coordinates = new int[2];
+        String str;
+        String[] values;
         while(true) {
-            try {
-                x = scanner.nextInt();
-                if (x < 8 && x > -1) {
-                    return x;
-                }
-            } catch (InputMismatchException e) {
-                scanner.nextLine();
+            str = scanner.nextLine();
+            values = str.split(" ");
+            while (values.length != 2) {
+                System.out.println("Enter 2 values!");
+                str = scanner.nextLine();
+                values = str.split(" ");
             }
-            System.out.println("Incorrect input format!");
+            try {
+                coordinates[0] = Integer.parseInt(values[0]);
+                coordinates[1] = Integer.parseInt(values[1]);
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Incorrect input!");
+            }
         }
+        return coordinates;
     }
     private int print(int player) {
         System.out.print("\n=================================================\n");
@@ -151,11 +174,11 @@ public class Game {
                         zeros++;
                     }
                     case 1 -> {
-                        System.out.print("  *  ");
+                        System.out.print("  ●  ");
                         ones++;
                     }
                     case 2 -> {
-                        System.out.print("  #  ");
+                        System.out.print("  ©  ");
                         twos++;
                     }
                     case 3 -> System.out.print("     ");
